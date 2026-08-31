@@ -2,7 +2,6 @@ package app.scopeshift.module
 
 import android.app.Activity
 import android.content.SharedPreferences
-import android.graphics.Insets
 import android.os.Bundle
 import android.util.Log
 import android.view.Gravity
@@ -39,15 +38,9 @@ class MainActivity : Activity(), XposedServiceHelper.OnServiceListener {
     private lateinit var gpsValue: TextView
     private lateinit var saveButton: Button
     private lateinit var resetButton: Button
-    private var xposedService: XposedService? = null
     private var preferences: SharedPreferences? = null
     private var scopeCount = 0
     private var restoringSelection = false
-    private val activationTimeout = Runnable {
-        if (xposedService == null && !isFinishing && !isDestroyed) {
-            bindServiceState(null)
-        }
-    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -89,7 +82,7 @@ class MainActivity : Activity(), XposedServiceHelper.OnServiceListener {
                 WindowInsetsController.APPEARANCE_LIGHT_NAVIGATION_BARS,
         )
         findViewById<View>(R.id.root).setOnApplyWindowInsetsListener { view, insets ->
-            val systemBars: Insets = insets.getInsets(WindowInsets.Type.systemBars())
+            val systemBars = insets.getInsets(WindowInsets.Type.systemBars())
             view.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
             insets
         }
@@ -125,7 +118,6 @@ class MainActivity : Activity(), XposedServiceHelper.OnServiceListener {
     private fun connectXposedService() {
         try {
             XposedServiceHelper.registerListener(this)
-            statusText.postDelayed(activationTimeout, ACTIVATION_TIMEOUT_MS)
         } catch (error: Throwable) {
             Log.e(TAG, "Unable to register the Xposed service listener", error)
             showServiceError(getString(R.string.service_unavailable))
@@ -133,64 +125,54 @@ class MainActivity : Activity(), XposedServiceHelper.OnServiceListener {
     }
 
     override fun onServiceBind(service: XposedService) {
-        runOnUiThread {
-            statusText.removeCallbacks(activationTimeout)
-            bindServiceState(service)
-        }
+        runOnUiThread { bindServiceState(service) }
     }
 
     override fun onServiceDied(service: XposedService) {
-        runOnUiThread {
-            statusText.removeCallbacks(activationTimeout)
-            bindServiceState(null)
-        }
+        runOnUiThread { bindServiceState(null) }
     }
 
     private fun bindServiceState(service: XposedService?) {
-        xposedService = service
-        preferences = null
-        scopeCount = 0
         if (service == null) {
-            statusDot.setTextColor(getColor(R.color.error))
-            statusText.setText(R.string.module_inactive)
-            scopeText.setText(R.string.module_inactive_hint)
-            saveButton.isEnabled = false
-            resetButton.isEnabled = false
+            showUnavailableState(
+                getString(R.string.module_inactive),
+                R.string.module_inactive_hint,
+            )
             return
         }
 
         try {
             val apiVersion = service.apiVersion
-            if (apiVersion < REQUIRED_XPOSED_API) {
+            if (apiVersion < MINIMUM_XPOSED_API) {
                 showServiceError(getString(R.string.api_too_old, apiVersion))
                 return
             }
             val remotePreferences = service.getRemotePreferences(ProfileStore.FILE_NAME)
-                ?: run {
-                    showServiceError(getString(R.string.remote_preferences_unavailable))
-                    return
-                }
             val stored = ProfileStore.read(remotePreferences)
+            val configured = ProfileStore.isConfigured(remotePreferences)
             scopeCount = service.scope.size
             preferences = remotePreferences
             statusDot.setTextColor(getColor(R.color.accent))
             statusText.text = getString(R.string.connected, service.frameworkName, apiVersion)
             restoreSelection(stored)
-            updateConfigSummary(stored)
+            updateConfigSummary(stored, configured)
             saveButton.isEnabled = true
-            resetButton.isEnabled = ProfileStore.isConfigured(remotePreferences)
+            resetButton.isEnabled = configured
         } catch (error: Throwable) {
             Log.e(TAG, "Unable to initialize the Xposed service", error)
             showServiceError(getString(R.string.service_unavailable))
         }
     }
 
-    private fun showServiceError(message: String) {
-        xposedService = null
+    private fun showServiceError(message: String) =
+        showUnavailableState(message, R.string.service_error_hint)
+
+    private fun showUnavailableState(message: String, hint: Int) {
         preferences = null
+        scopeCount = 0
         statusDot.setTextColor(getColor(R.color.error))
         statusText.text = message
-        scopeText.setText(R.string.service_error_hint)
+        scopeText.setText(hint)
         saveButton.isEnabled = false
         resetButton.isEnabled = false
     }
@@ -204,10 +186,7 @@ class MainActivity : Activity(), XposedServiceHelper.OnServiceListener {
     }
 
     private fun updateCarrierSpinner(region: RegionProfile, preferredCarrierId: String?) {
-        var selectedId = preferredCarrierId
-        if (selectedId == null) {
-            selectedId = (carrierSpinner.selectedItem as? CarrierProfile)?.id
-        }
+        val selectedId = preferredCarrierId ?: (carrierSpinner.selectedItem as? CarrierProfile)?.id
         carrierSpinner.adapter = ArrayAdapter(
             this,
             android.R.layout.simple_spinner_item,
@@ -241,8 +220,7 @@ class MainActivity : Activity(), XposedServiceHelper.OnServiceListener {
         }
         try {
             if (ProfileStore.write(remotePreferences, region, carrier)) {
-                refreshRunningTargets()
-                updateConfigSummary(EnvironmentProfile(region, carrier))
+                updateConfigSummary(EnvironmentProfile(region, carrier), true)
                 resetButton.isEnabled = true
                 Toast.makeText(this, R.string.save_success, Toast.LENGTH_LONG).show()
             } else {
@@ -265,8 +243,7 @@ class MainActivity : Activity(), XposedServiceHelper.OnServiceListener {
             if (ProfileStore.clear(remotePreferences)) {
                 val defaultProfile = ProfileStore.read(remotePreferences)
                 restoreSelection(defaultProfile)
-                refreshRunningTargets()
-                updateConfigSummary(defaultProfile)
+                updateConfigSummary(defaultProfile, false)
                 resetButton.isEnabled = false
                 Toast.makeText(this, R.string.reset_success, Toast.LENGTH_LONG).show()
             } else {
@@ -279,32 +256,18 @@ class MainActivity : Activity(), XposedServiceHelper.OnServiceListener {
         }
     }
 
-    private fun updateConfigSummary(profile: EnvironmentProfile) {
-        val remotePreferences = preferences ?: return
-        val configuration = if (ProfileStore.isConfigured(remotePreferences)) {
+    private fun updateConfigSummary(profile: EnvironmentProfile, configured: Boolean) {
+        val configuration = if (configured) {
             getString(R.string.configured, profile.region.displayName)
         } else {
             getString(R.string.unconfigured)
         }
-        val targetState = when {
-            scopeCount == 0 -> getString(R.string.no_scope)
-            else -> getString(R.string.scope_count, scopeCount)
+        val targetState = if (scopeCount == 0) {
+            getString(R.string.no_scope)
+        } else {
+            getString(R.string.scope_count, scopeCount)
         }
         scopeText.text = getString(R.string.configuration_and_scope, configuration, targetState)
-    }
-
-    private fun refreshRunningTargets() {
-        val service = xposedService ?: return
-        try {
-            val targets = service.runningTargets
-            for (target in targets) {
-                service.hotReloadModule(target, null) { process, result ->
-                    Log.i(TAG, "Hot reload ${process.processName}: $result")
-                }
-            }
-        } catch (error: Throwable) {
-            Log.w(TAG, "Unable to hot reload running targets", error)
-        }
     }
 
     private fun showStartupFailure(error: Throwable) {
@@ -320,7 +283,6 @@ class MainActivity : Activity(), XposedServiceHelper.OnServiceListener {
 
     private companion object {
         const val TAG = "ScopeShift"
-        const val REQUIRED_XPOSED_API = 102
-        const val ACTIVATION_TIMEOUT_MS = 2_000L
+        const val MINIMUM_XPOSED_API = 101
     }
 }

@@ -45,7 +45,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/status_dot"
-                android:textColor="@color/accent"
+                android:textColor="@color/error"
                 android:textSize="16sp" />
 
             <LinearLayout
@@ -59,7 +59,7 @@
                     android:id="@+id/status_text"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="@string/connecting"
+                    android:text="@string/module_inactive"
                     android:textColor="@color/text_primary"
                     android:textSize="16sp" />
 
@@ -68,7 +68,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="3dp"
-                    android:text="@string/scope_hint"
+                    android:text="@string/module_inactive_hint"
                     android:textColor="@color/text_secondary"
                     android:textSize="13sp" />
             </LinearLayout>
@@ -148,7 +148,6 @@
                 android:textStyle="bold" />
 
             <TableLayout
-                android:id="@+id/profile_table"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="14dp"

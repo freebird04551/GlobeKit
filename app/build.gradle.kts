@@ -55,6 +55,8 @@ androidComponents {
 }
 
 dependencies {
-    compileOnly("io.github.libxposed:api:102.0.0")
-    implementation("io.github.libxposed:service:102.0.0")
+    //noinspection GradleDependency,NewerVersionAvailable
+    compileOnly("io.github.libxposed:api:101.0.1")
+    //noinspection GradleDependency,NewerVersionAvailable
+    implementation("io.github.libxposed:service:101.0.0")
 }

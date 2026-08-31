@@ -1,6 +1,6 @@
 package app.scopeshift.module.model
 
-data class EnvironmentProfile(
+class EnvironmentProfile(
     val region: RegionProfile,
     val carrier: CarrierProfile,
 )

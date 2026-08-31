@@ -1,7 +1,6 @@
 package app.scopeshift.module.hook
 
 import android.annotation.SuppressLint
-import android.content.SharedPreferences
 import android.content.res.Configuration
 import android.content.res.Resources
 import android.location.Location
@@ -15,20 +14,16 @@ import android.util.Log
 import app.scopeshift.module.model.EnvironmentProfile
 import app.scopeshift.module.model.ProfileStore
 import io.github.libxposed.api.XposedModule
-import io.github.libxposed.api.XposedModuleInterface.HotReloadedParam
-import io.github.libxposed.api.XposedModuleInterface.HotReloadingParam
 import io.github.libxposed.api.XposedModuleInterface.ModuleLoadedParam
 import java.lang.reflect.Method
 import java.lang.reflect.Modifier
 import java.time.ZoneId
 import java.util.Locale
 import java.util.TimeZone
-import java.util.concurrent.atomic.AtomicReference
 
 class ScopeShiftModule : XposedModule() {
-    private val activeProfile = AtomicReference<EnvironmentProfile?>(null)
-    private var preferences: SharedPreferences? = null
-    private var preferenceListener: SharedPreferences.OnSharedPreferenceChangeListener? = null
+    @Volatile
+    private var activeProfile: EnvironmentProfile? = null
     private var installedHooks = 0
 
     override fun onModuleLoaded(param: ModuleLoadedParam) {
@@ -41,11 +36,7 @@ class ScopeShiftModule : XposedModule() {
         if (packageName in EXCLUDED_PACKAGES) return
         try {
             val remotePreferences = getRemotePreferences(ProfileStore.FILE_NAME)
-            preferences = remotePreferences
-            activeProfile.set(ProfileStore.readActive(remotePreferences))
-            preferenceListener = SharedPreferences.OnSharedPreferenceChangeListener { shared, _ ->
-                activeProfile.set(ProfileStore.readActive(shared))
-            }.also(remotePreferences::registerOnSharedPreferenceChangeListener)
+            activeProfile = ProfileStore.readActive(remotePreferences)
 
             installTelephonyHooks()
             installCarrierConfigHooks()
@@ -56,18 +47,6 @@ class ScopeShiftModule : XposedModule() {
         } catch (error: Throwable) {
             log(Log.ERROR, TAG, "Failed to initialize hooks for ${param.processName}", error)
         }
-    }
-
-    override fun onHotReloading(param: HotReloadingParam): Boolean {
-        val listener = preferenceListener
-        if (listener != null) {
-            preferences?.unregisterOnSharedPreferenceChangeListener(listener)
-        }
-        return true
-    }
-
-    override fun onHotReloaded(param: HotReloadedParam) {
-        param.oldHookHandles.forEach { it.unhook() }
     }
 
     private fun installTelephonyHooks() {
@@ -133,7 +112,7 @@ class ScopeShiftModule : XposedModule() {
             install(method) {
                 hook(method).intercept { chain ->
                     val result = chain.proceed()
-                    val current = activeProfile.get()
+                    val current = activeProfile
                     if (current == null) {
                         result
                     } else {
@@ -171,7 +150,7 @@ class ScopeShiftModule : XposedModule() {
             install(method) {
                 hook(method).intercept { chain ->
                     val original = chain.proceed() as Configuration
-                    val current = activeProfile.get()
+                    val current = activeProfile
                     if (current == null) {
                         original
                     } else {
@@ -204,7 +183,7 @@ class ScopeShiftModule : XposedModule() {
                 }
                 install(method) {
                     hook(method).intercept { chain ->
-                        val current = activeProfile.get()
+                        val current = activeProfile
                         if (current != null && chain.getArg(0) == "persist.sys.timezone") {
                             current.region.timeZoneId
                         } else {
@@ -232,7 +211,7 @@ class ScopeShiftModule : XposedModule() {
             if (method.name !in names || Modifier.isAbstract(method.modifiers)) continue
             install(method) {
                 hook(method).intercept { chain ->
-                    val current = activeProfile.get()
+                    val current = activeProfile
                     if (current == null) chain.proceed() else value(current)
                 }
             }

@@ -1,6 +1,6 @@
 package app.scopeshift.module.model
 
-data class CarrierProfile(
+class CarrierProfile(
     val id: String,
     val displayName: String,
     val mcc: String,

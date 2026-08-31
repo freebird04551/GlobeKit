@@ -35,9 +35,5 @@ object ProfileStore {
         .putString(KEY_CARRIER, carrier.id)
         .commit()
 
-    fun clear(preferences: SharedPreferences): Boolean = preferences.edit()
-        .remove(KEY_CONFIGURED)
-        .remove(KEY_REGION)
-        .remove(KEY_CARRIER)
-        .commit()
+    fun clear(preferences: SharedPreferences): Boolean = preferences.edit().clear().commit()
 }

@@ -1,6 +1,6 @@
 # ScopeShift
 
-ScopeShift 是一个基于 libxposed Modern API 102 的应用级地区环境模块。它只在 LSPosed 作用域内工作，为选定应用提供一致的 SIM、运营商、语言、时区和位置参数。
+ScopeShift 是一个基于 libxposed Modern API 的应用级地区环境模块。它只在 LSPosed 作用域内工作，为应用提供一致的 SIM、运营商、语言、时区和位置参数。
 
 ## 功能
 
@@ -8,22 +8,20 @@ ScopeShift 是一个基于 libxposed Modern API 102 的应用级地区环境模�
 - 覆盖 SIM/网络国家码、运营商名称和 MCC-MNC
 - 覆盖应用进程读取到的语言、IANA 时区、实时 UTC 偏移和 GPS 坐标
 - 内置 32 个常用地区及对应运营商
-- 使用 Remote Preferences 同步配置，保存后自动热重载已注入进程
+- 使用 Remote Preferences 保存配置
 - 可清除当前配置，使作用域应用恢复读取真实系统环境
 - 作用域完全由 LSPosed 管理器控制
 
 ## 兼容性
 
-- Android 11 至 Android 16
-- 支持 libxposed Modern API 102 的 LSPosed 实现
-- 已在 Android 16、LSPosed API 102 环境完成真机验证
+- 适用于 Android 11 及以上系统，需搭配支持 libxposed Modern API 101 及以上的 LSPosed
 
 ## 安装与使用
 
 1. 从项目 Releases 下载已签名 APK 并安装。
 2. 在 LSPosed 中启用 ScopeShift，并勾选需要生效的应用。
 3. 打开 ScopeShift，选择地区和运营商后保存。
-4. 首次启用模块或切换作用域后，强制停止并重新打开目标应用。
+4. 强制停止并重新打开目标应用，使配置生效。
 
 配置页会显示当前作用域应用数量。需要停止覆盖时，点击“恢复系统默认”清除配置。目标应用可能缓存已经读取的地区数据；遇到未立即变化的情况，请先彻底结束其进程后再测试。
 
@@ -39,7 +37,7 @@ ScopeShift 不申请 Android 权限，不包含网络访问，也不收集或上
 
 要求：JDK 21、Android SDK 37。项目使用 Gradle Wrapper 和固定版本的 libxposed 依赖。
 
-可安装的调试包：
+Debug 构建：
 
 ```powershell
 .\gradlew.bat :app:assembleDebug
@@ -47,7 +45,7 @@ ScopeShift 不申请 Android 权限，不包含网络访问，也不收集或上
 
 产物位于 `app/build/outputs/apk/debug/ScopeShift-<版本号>-debug.apk`。
 
-优化后的 Release 包：
+Release 构建：
 
 ```powershell
 .\gradlew.bat :app:assembleRelease
