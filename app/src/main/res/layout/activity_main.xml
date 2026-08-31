@@ -1,0 +1,200 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/root"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:clipToPadding="false"
+    android:fillViewport="true">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:paddingStart="24dp"
+        android:paddingTop="28dp"
+        android:paddingEnd="24dp"
+        android:paddingBottom="32dp">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/app_name"
+            android:textColor="@color/text_primary"
+            android:textSize="34sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            android:text="@string/screen_subtitle"
+            android:textColor="@color/text_secondary"
+            android:textSize="17sp" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="24dp"
+            android:background="@drawable/bg_status"
+            android:gravity="center_vertical"
+            android:orientation="horizontal"
+            android:padding="16dp">
+
+            <TextView
+                android:id="@+id/status_dot"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/status_dot"
+                android:textColor="@color/accent"
+                android:textSize="16sp" />
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="12dp"
+                android:layout_weight="1"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/status_text"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/connecting"
+                    android:textColor="@color/text_primary"
+                    android:textSize="16sp" />
+
+                <TextView
+                    android:id="@+id/scope_text"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="3dp"
+                    android:text="@string/scope_hint"
+                    android:textColor="@color/text_secondary"
+                    android:textSize="13sp" />
+            </LinearLayout>
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="18dp"
+            android:background="@drawable/bg_card"
+            android:orientation="vertical"
+            android:padding="18dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/region"
+                android:textColor="@color/text_secondary"
+                android:textSize="14sp" />
+
+            <Spinner
+                android:id="@+id/region_spinner"
+                android:layout_width="match_parent"
+                android:layout_height="52dp"
+                android:layout_marginTop="4dp" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:text="@string/carrier"
+                android:textColor="@color/text_secondary"
+                android:textSize="14sp" />
+
+            <Spinner
+                android:id="@+id/carrier_spinner"
+                android:layout_width="match_parent"
+                android:layout_height="52dp"
+                android:layout_marginTop="4dp" />
+
+            <Button
+                android:id="@+id/save_button"
+                android:layout_width="match_parent"
+                android:layout_height="52dp"
+                android:layout_marginTop="18dp"
+                android:background="@drawable/bg_button"
+                android:text="@string/save"
+                android:textAllCaps="false"
+                android:textColor="@android:color/white"
+                android:textSize="16sp" />
+
+            <Button
+                android:id="@+id/reset_button"
+                style="?android:attr/borderlessButtonStyle"
+                android:layout_width="match_parent"
+                android:layout_height="48dp"
+                android:layout_marginTop="6dp"
+                android:text="@string/reset"
+                android:textAllCaps="false"
+                android:textSize="15sp" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="18dp"
+            android:background="@drawable/bg_card"
+            android:orientation="vertical"
+            android:padding="18dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/profile_title"
+                android:textColor="@color/text_primary"
+                android:textSize="18sp"
+                android:textStyle="bold" />
+
+            <TableLayout
+                android:id="@+id/profile_table"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="14dp"
+                android:shrinkColumns="1"
+                android:stretchColumns="1">
+
+                <TableRow style="@style/ProfileRow">
+                    <TextView style="@style/ProfileLabel" android:text="@string/sim_country" />
+                    <TextView android:id="@+id/sim_country_value" style="@style/ProfileValue" />
+                </TableRow>
+
+                <TableRow style="@style/ProfileRow">
+                    <TextView style="@style/ProfileLabel" android:text="@string/network_country" />
+                    <TextView android:id="@+id/network_country_value" style="@style/ProfileValue" />
+                </TableRow>
+
+                <TableRow style="@style/ProfileRow">
+                    <TextView style="@style/ProfileLabel" android:text="@string/carrier" />
+                    <TextView android:id="@+id/carrier_value" style="@style/ProfileValue" />
+                </TableRow>
+
+                <TableRow style="@style/ProfileRow">
+                    <TextView style="@style/ProfileLabel" android:text="@string/mcc_mnc" />
+                    <TextView android:id="@+id/mcc_mnc_value" style="@style/ProfileValue" />
+                </TableRow>
+
+                <TableRow style="@style/ProfileRow">
+                    <TextView style="@style/ProfileLabel" android:text="@string/system_language" />
+                    <TextView android:id="@+id/language_value" style="@style/ProfileValue" />
+                </TableRow>
+
+                <TableRow style="@style/ProfileRow">
+                    <TextView style="@style/ProfileLabel" android:text="@string/system_timezone" />
+                    <TextView android:id="@+id/timezone_value" style="@style/ProfileValue" />
+                </TableRow>
+
+                <TableRow style="@style/ProfileRow">
+                    <TextView style="@style/ProfileLabel" android:text="@string/current_offset" />
+                    <TextView android:id="@+id/offset_value" style="@style/ProfileValue" />
+                </TableRow>
+
+                <TableRow style="@style/ProfileRow">
+                    <TextView style="@style/ProfileLabel" android:text="@string/gps" />
+                    <TextView android:id="@+id/gps_value" style="@style/ProfileValue" />
+                </TableRow>
+            </TableLayout>
+        </LinearLayout>
+    </LinearLayout>
+</ScrollView>

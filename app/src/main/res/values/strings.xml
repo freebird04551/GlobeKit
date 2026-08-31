@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">ScopeShift</string>
+    <string name="module_description">为选定应用提供一致的地区环境</string>
+    <string name="screen_subtitle">应用级地区环境</string>
+    <string name="connecting">正在连接 LSPosed…</string>
+    <string name="status_dot">●</string>
+    <string name="module_inactive">模块未激活</string>
+    <string name="module_inactive_hint">请在 LSPosed 管理器中启用 ScopeShift</string>
+    <string name="connected">%1$s 已连接 · API %2$d</string>
+    <string name="api_too_old">LSPosed API %1$d 不受支持</string>
+    <string name="remote_preferences_unavailable">无法读取模块配置</string>
+    <string name="service_unavailable">LSPosed 服务异常</string>
+    <string name="service_error_hint">请确认 LSPosed 支持 Modern API 102</string>
+    <string name="region">地区</string>
+    <string name="carrier">运营商</string>
+    <string name="save">保存配置</string>
+    <string name="reset">恢复系统默认</string>
+    <string name="profile_title">参数预览</string>
+    <string name="sim_country">SIM 国家码</string>
+    <string name="network_country">网络国家码</string>
+    <string name="mcc_mnc">MCC-MNC</string>
+    <string name="system_language">系统语言</string>
+    <string name="system_timezone">系统时区</string>
+    <string name="current_offset">时区偏移</string>
+    <string name="gps">GPS 坐标</string>
+    <string name="gps_coordinates">%1$.4f, %2$.4f</string>
+    <string name="scope_hint">作用域由 LSPosed 管理器控制</string>
+    <string name="configured">已配置 · %1$s</string>
+    <string name="unconfigured">未配置</string>
+    <string name="no_scope">尚未选择作用域</string>
+    <string name="scope_count">作用域 %1$d 个应用</string>
+    <string name="configuration_and_scope">%1$s · %2$s</string>
+    <string name="save_success">配置已保存，请重新启动目标应用</string>
+    <string name="save_unavailable">LSPosed 未连接，无法保存配置</string>
+    <string name="save_failed">配置保存失败</string>
+    <string name="reset_success">已恢复系统默认，请重新启动目标应用</string>
+    <string name="reset_unavailable">LSPosed 未连接，无法恢复默认</string>
+    <string name="reset_failed">恢复默认失败</string>
+    <string name="startup_failed">界面初始化失败：%1$s</string>
+</resources>
