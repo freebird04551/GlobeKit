@@ -1,6 +1,6 @@
 # Third-party notices
 
-ScopeShift 使用以下开源组件：
+GlobeKit 使用以下开源组件：
 
 ## libxposed API
 
@@ -14,4 +14,4 @@ ScopeShift 使用以下开源组件：
 - 版本：101.0.0
 - 许可：Apache License 2.0
 
-上述项目的版权归其各自作者和贡献者所有。ScopeShift 的 MIT License 不会改变第三方组件原有的许可条款。
+上述项目的版权归其各自作者和贡献者所有。GlobeKit 的 MIT License 不会改变第三方组件原有的许可条款。

@@ -1,4 +1,4 @@
-package app.scopeshift.module.model
+package app.globekit.module.model
 
 import java.time.Instant
 import java.time.ZoneId
@@ -8,7 +8,7 @@ class RegionProfile(
     val id: String,
     val displayName: String,
     countryIso: String,
-    val localeTag: String,
+    localeTag: String,
     val timeZoneId: String,
     val latitude: Double,
     val longitude: Double,
@@ -31,5 +31,5 @@ class RegionProfile(
         require(carriers.isNotEmpty()) { "A region must contain at least one carrier" }
     }
 
-    override fun toString(): String = displayName
+    override fun toString(): String = "$displayName（$countryIso）"
 }

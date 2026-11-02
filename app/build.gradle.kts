@@ -3,15 +3,15 @@ plugins {
 }
 
 android {
-    namespace = "app.scopeshift.module"
+    namespace = "app.globekit.module"
     compileSdk = 37
 
     defaultConfig {
-        applicationId = "app.scopeshift.module"
+        applicationId = "app.globekit.module"
         minSdk = 30
         targetSdk = 37
-        versionCode = 5
-        versionName = "1.0.4"
+        versionCode = 6
+        versionName = "1.0.5"
     }
 
     buildTypes {
@@ -47,7 +47,7 @@ androidComponents {
         variant.outputs.forEach { output ->
             output.outputFileName.set(
                 output.versionName.map { version ->
-                    "ScopeShift-$version-${variant.name}.apk"
+                    "GlobeKit-$version-${variant.name}.apk"
                 },
             )
         }
@@ -55,6 +55,7 @@ androidComponents {
 }
 
 dependencies {
+    testImplementation("junit:junit:4.13.2")
     //noinspection GradleDependency,NewerVersionAvailable
     compileOnly("io.github.libxposed:api:101.0.1")
     //noinspection GradleDependency,NewerVersionAvailable

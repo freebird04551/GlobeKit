@@ -1,12 +1,29 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <style name="Theme.ScopeShift" parent="android:style/Theme.Material.Light.NoActionBar">
+    <style name="Theme.GlobeKit" parent="android:style/Theme.Material.Light.NoActionBar">
         <item name="android:windowLightStatusBar">true</item>
         <item name="android:statusBarColor">@android:color/transparent</item>
         <item name="android:navigationBarColor">@android:color/transparent</item>
         <item name="android:windowBackground">@color/page_background</item>
         <item name="android:colorAccent">@color/accent</item>
+        <item name="accentSoft">@color/accent_soft</item>
     </style>
+
+    <style name="Theme.GlobeKit.Dark" parent="android:style/Theme.Material.NoActionBar">
+        <item name="android:windowLightStatusBar">false</item>
+        <item name="android:windowLightNavigationBar">false</item>
+        <item name="android:statusBarColor">@android:color/transparent</item>
+        <item name="android:navigationBarColor">@android:color/transparent</item>
+        <item name="android:windowBackground">@color/page_background</item>
+        <item name="android:colorAccent">#BFC0FF</item>
+        <item name="accentSoft">#2C2D4D</item>
+    </style>
+
+    <style name="Palette.Indigo" parent=""><item name="android:colorAccent">#30308C</item><item name="accentSoft">#EEEEF8</item></style>
+    <style name="Palette.Blue" parent=""><item name="android:colorAccent">#155AA8</item><item name="accentSoft">#E8F0FC</item></style>
+    <style name="Palette.Green" parent=""><item name="android:colorAccent">#176B50</item><item name="accentSoft">#E6F3EC</item></style>
+    <style name="Palette.Orange" parent=""><item name="android:colorAccent">#9C4A00</item><item name="accentSoft">#FFF0E0</item></style>
+    <style name="Palette.Rose" parent=""><item name="android:colorAccent">#A32E62</item><item name="accentSoft">#FCEAF1</item></style>
 
     <style name="ProfileRow">
         <item name="android:layout_width">match_parent</item>

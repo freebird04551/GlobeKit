@@ -1,4 +1,4 @@
-package app.scopeshift.module.hook
+package app.globekit.module.hook
 
 import android.annotation.SuppressLint
 import android.content.res.Configuration
@@ -11,17 +11,18 @@ import android.telephony.ServiceState
 import android.telephony.SubscriptionInfo
 import android.telephony.TelephonyManager
 import android.util.Log
-import app.scopeshift.module.model.EnvironmentProfile
-import app.scopeshift.module.model.ProfileStore
+import app.globekit.module.model.EnvironmentProfile
+import app.globekit.module.model.ProfileStore
 import io.github.libxposed.api.XposedModule
 import io.github.libxposed.api.XposedModuleInterface.ModuleLoadedParam
+import io.github.libxposed.api.XposedModuleInterface.PackageLoadedParam
 import java.lang.reflect.Method
 import java.lang.reflect.Modifier
 import java.time.ZoneId
 import java.util.Locale
 import java.util.TimeZone
 
-class ScopeShiftModule : XposedModule() {
+class GlobeKitModule : XposedModule() {
     @Volatile
     private var activeProfile: EnvironmentProfile? = null
     private var installedHooks = 0
@@ -32,20 +33,22 @@ class ScopeShiftModule : XposedModule() {
             TAG,
             "Loaded in ${param.processName} with $frameworkName API $apiVersion",
         )
-        val packageName = param.processName.substringBefore(':')
-        if (packageName in EXCLUDED_PACKAGES) return
+    }
+
+    override fun onPackageLoaded(param: PackageLoadedParam) {
+        if (!param.isFirstPackage || param.packageName in EXCLUDED_PACKAGES) return
         try {
             val remotePreferences = getRemotePreferences(ProfileStore.FILE_NAME)
-            activeProfile = ProfileStore.readActive(remotePreferences)
+            activeProfile = ProfileStore.readActive(remotePreferences, param.packageName)
 
             installTelephonyHooks()
             installCarrierConfigHooks()
             installLocaleHooks()
             installTimeZoneHooks()
             installLocationHooks()
-            log(Log.INFO, TAG, "Installed $installedHooks hooks for ${param.processName}")
+            log(Log.INFO, TAG, "Installed $installedHooks hooks for ${param.packageName}")
         } catch (error: Throwable) {
-            log(Log.ERROR, TAG, "Failed to initialize hooks for ${param.processName}", error)
+            log(Log.ERROR, TAG, "Failed to initialize hooks for ${param.packageName}", error)
         }
     }
 
@@ -133,12 +136,15 @@ class ScopeShiftModule : XposedModule() {
     }
 
     private fun installLocaleHooks() {
-        hookConstant(Locale::class.java, setOf("getDefault")) { it.region.locale }
+        // Preserve original locale APIs, resource configuration and the full
+        // language list when the user asks to follow the system.
+        if (activeProfile?.followsSystemLanguage == true) return
+        hookConstant(Locale::class.java, setOf("getDefault")) { it.locale }
         hookConstant(LocaleList::class.java, setOf("getDefault", "getAdjustedDefault")) {
-            LocaleList(it.region.locale)
+            LocaleList(it.locale)
         }
         hookConstant(Configuration::class.java, setOf("getLocales")) {
-            LocaleList(it.region.locale)
+            LocaleList(it.locale)
         }
 
         for (method in Resources::class.java.declaredMethods) {
@@ -155,7 +161,7 @@ class ScopeShiftModule : XposedModule() {
                         original
                     } else {
                         Configuration(original).apply {
-                            setLocales(LocaleList(current.region.locale))
+                            setLocales(LocaleList(current.locale))
                         }
                     }
                 }
@@ -229,13 +235,13 @@ class ScopeShiftModule : XposedModule() {
     }
 
     private companion object {
-        const val TAG = "ScopeShift"
+        const val TAG = "GlobeKit"
         const val KEY_COUNTRY = "sim_country_iso_override_string"
         const val KEY_NAME_ENABLED = "carrier_name_override_bool"
         const val KEY_NAME = "carrier_name_string"
         const val KEY_FORCE_HOME = "force_home_network_bool"
         val EXCLUDED_PACKAGES = setOf(
-            "app.scopeshift.module",
+            "app.globekit.module",
             "android",
             "com.android.phone",
             "com.android.systemui",

@@ -14,5 +14,5 @@ dependencyResolutionManagement {
     }
 }
 
-rootProject.name = "ScopeShift"
+rootProject.name = "GlobeKit"
 include(":app")

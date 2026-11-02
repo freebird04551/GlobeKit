@@ -1,4 +1,4 @@
-package app.scopeshift.module.model
+package app.globekit.module.model
 
 class CarrierProfile(
     val id: String,

@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <style name="Palette.Indigo" parent=""><item name="android:colorAccent">#BFC0FF</item><item name="accentSoft">#2C2D4D</item></style>
+    <style name="Palette.Blue" parent=""><item name="android:colorAccent">#A3CCFF</item><item name="accentSoft">#20334A</item></style>
+    <style name="Palette.Green" parent=""><item name="android:colorAccent">#8DD7B8</item><item name="accentSoft">#203B31</item></style>
+    <style name="Palette.Orange" parent=""><item name="android:colorAccent">#FFC282</item><item name="accentSoft">#463222</item></style>
+    <style name="Palette.Rose" parent=""><item name="android:colorAccent">#FFB3CC</item><item name="accentSoft">#442B39</item></style>
+</resources>

@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="page_background">#101116</color>
+    <color name="surface">#1E2028</color>
+    <color name="button_text">#151724</color>
+    <color name="text_primary">#F1F2F7</color>
+    <color name="text_secondary">#ACAFBF</color>
+    <color name="divider">#343744</color>
+    <color name="error">#FFB4AB</color>
+</resources>
