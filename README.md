@@ -25,8 +25,6 @@ GlobeKit 是一个基于 libxposed Modern API 的应用级地区环境模块。�
 
 ## 安装与使用
 
-GlobeKit 的包名为 `app.globekit.module`。从旧包名 `app.scopeshift.module` 迁移时会作为独立应用安装；需在 LSPosed 中停用旧模块、启用 GlobeKit 并重新选择作用域和配置，旧应用的数据不会自动迁移。
-
 1. 从项目 Releases 下载已签名 APK 并安装。
 2. 在 LSPosed 中启用 GlobeKit，并勾选需要生效的应用。
 3. 打开 GlobeKit，在“配置对象”中选择“默认配置”或作用域内的应用包名。
