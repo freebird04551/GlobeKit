@@ -44,7 +44,7 @@
     <string name="update_failed">检查更新失败，请检查网络后重试，也可以直接打开发布页面。</string>
     <string name="open_releases">打开发布页面</string>
     <string name="app_name">GlobeKit</string>
-    <string name="module_description">为应用提供一致的地区环境，可绕过部分应用的地区检测</string>
+    <string name="module_description">按应用独立伪装 SIM 国家码、网络国家码、运营商、系统语言、时区及 GPS 位置，可绕过部分应用的地区检测。</string>
     <string name="screen_subtitle">应用级地区环境</string>
     <string name="status_dot">●</string>
     <string name="module_inactive">模块未激活</string>
